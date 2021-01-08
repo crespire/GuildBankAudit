@@ -2,5 +2,6 @@
 ## Title: Guild Bank Audit
 ## Notes: Exports guild bank information for external management.
 ## Version: 0.1
+## SavedVariables: SavedBankItemInfo
 
 GuildBankAudit.lua
