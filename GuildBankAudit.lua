@@ -9,8 +9,18 @@ function SlashCmdList.GUILDBANKAUDIT(cmd, editbox)
   elseif request  == "tab" then
     print("GBA Get Current Tab")
   elseif request  == "help" then
-    print("GBA Options Here!")
+    printHelp()
   else
-    print("GBA Options Here!")
+    printHelp()
   end
+end
+
+
+function printHelp()
+  print("----- |cff26c426Guild Bank Audit Options|r -----")
+  print("type the slash command followed by one of the options below -> '/gba command'")
+  print("|cff5fe65dall|r", " - Scans your entire guild bank.")
+  print("|cff5fe65dtab|r", " - Scans the current tab open in your guild bank.")
+  print("|cff5fe65dhelp|r", " - Displays this information here.")
+  print("------------------------------------")
 end
