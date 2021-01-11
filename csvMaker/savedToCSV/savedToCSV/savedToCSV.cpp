@@ -8,7 +8,7 @@
 
 // Global Variables:
 HINSTANCE hInst;                                // current instance
-WCHAR szTitle[MAX_LOADSTRING];                  // The title bar text
+WCHAR szTitle[MAX_LOADSTRING] = _T("WoW Saved Variable to CSV");                  // The title bar text
 WCHAR szWindowClass[MAX_LOADSTRING];            // the main window class name
 
 // Forward declarations of functions included in this code module:
@@ -16,6 +16,11 @@ ATOM                MyRegisterClass(HINSTANCE hInstance);
 BOOL                InitInstance(HINSTANCE, int);
 LRESULT CALLBACK    WndProc(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK    About(HWND, UINT, WPARAM, LPARAM);
+
+OPENFILENAME file;
+TCHAR szFile[260] = { 0 };
+HWND hwnd;
+HANDLE hf;
 
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
                      _In_opt_ HINSTANCE hPrevInstance,
@@ -147,6 +152,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             PAINTSTRUCT ps;
             HDC hdc = BeginPaint(hWnd, &ps);
             // TODO: Add any drawing code that uses hdc here...
+			FillRect(hdc, &ps.rcPaint, (HBRUSH)(COLOR_WINDOW + 1));
             EndPaint(hWnd, &ps);
         }
         break;
@@ -177,4 +183,29 @@ INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
         break;
     }
     return (INT_PTR)FALSE;
+}
+
+std::wstring openFile()
+{
+	ZeroMemory(&file, sizeof(file));
+	file.lStructSize = sizeof(file);
+	file.hwndOwner = hwnd;
+	file.lpstrFile = szFile;
+	file.lpstrFile[0] = '\0';
+	file.nMaxFile = sizeof(szFile);
+	file.lpstrFilter = _T("All\0*.*\0Text\0.TXT\0");
+	file.nFilterIndex = 0;
+	file.lpstrFileTitle = NULL;
+	file.nMaxFileTitle = 0;
+	file.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST;
+
+	std::wstring filePath;
+
+	if (GetOpenFileName(&file) == TRUE)
+	{
+		hf = CreateFile(file.lpstrFile, GENERIC_READ, 0, (LPSECURITY_ATTRIBUTES)NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, (HANDLE)NULL);
+		filePath = szFile;
+	}
+
+	return filePath;
 }
