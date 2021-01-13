@@ -214,14 +214,22 @@ void ConvertToCSV()
 {
 	int line;
 	std::vector<std::string> printBuffer;
-	std::vector<int> numBuffer;
+	std::vector<std::string> numBuffer;
 
-	std::ofstream savedVarFile;
+	std::ifstream savedVarFile;
 	savedVarFile.open(&file, std::fstream::in);
 	for (int i = 0; i < std::ios::end; i++)
 	{
-		printBuffer[i].push_back(std::getline(savedVarFile, i));
-		numBuffer[i].push_back(std::getline(savedVarFile, i + 1));
+		//printBuffer[i].push_back(std::getline(savedVarFile, printBuffer));
+		//numBuffer[i].push_back(std::getline(savedVarFile, numBuffer));
+		std::getline(savedVarFile, printBuffer[i]);
+		i++;
+		//std::getline(savedVarFile, numBuffer[i]);
+	}
+	for (int i = 1; i < std::ios::end; i++)
+	{
+		std::getline(savedVarFile, numBuffer[i]);
+		i++;
 	}
 	savedVarFile.close();
 
@@ -234,10 +242,11 @@ void ConvertToCSV()
 	{
 		for (line; line < printBuffer.max_size(); line + 2)
 		{
-			for (int j = line + 1; j < numBuffer.max_size(); j + 2)
-			{
+			
+		}
+		for (int j = line + 1; j < numBuffer.max_size(); j + 2)
+		{
 
-			}
 		}
 	}
 	//open csv file
