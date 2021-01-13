@@ -80,7 +80,7 @@ ATOM MyRegisterClass(HINSTANCE hInstance)
     wcex.hInstance      = hInstance;
     wcex.hIcon          = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_SAVEDTOCSV));
     wcex.hCursor        = LoadCursor(nullptr, IDC_ARROW);
-    wcex.hbrBackground  = (HBRUSH)(COLOR_WINDOW+1);
+	wcex.hbrBackground  = (HBRUSH)(COLOR_WINDOW+2); 
     wcex.lpszMenuName   = MAKEINTRESOURCEW(IDC_SAVEDTOCSV);
     wcex.lpszClassName  = szWindowClass;
     wcex.hIconSm        = LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_SMALL));
@@ -152,7 +152,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             PAINTSTRUCT ps;
             HDC hdc = BeginPaint(hWnd, &ps);
             // TODO: Add any drawing code that uses hdc here...
-			FillRect(hdc, &ps.rcPaint, (HBRUSH)(COLOR_WINDOW + 1));
+			FillRect(hdc, &ps.rcPaint, (HBRUSH)(COLOR_WINDOW+2));
             EndPaint(hWnd, &ps);
         }
         break;
@@ -185,7 +185,7 @@ INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
     return (INT_PTR)FALSE;
 }
 
-std::wstring openFile()
+std::wstring OpenFile()
 {
 	ZeroMemory(&file, sizeof(file));
 	file.lStructSize = sizeof(file);
@@ -208,4 +208,41 @@ std::wstring openFile()
 	}
 
 	return filePath;
+}
+
+void ConvertToCSV()
+{
+	int line;
+	std::vector<std::string> printBuffer;
+	std::vector<int> numBuffer;
+
+	std::ofstream savedVarFile;
+	savedVarFile.open(&file, std::fstream::in);
+	for (int i = 0; i < std::ios::end; i++)
+	{
+		printBuffer[i].push_back(std::getline(savedVarFile, i));
+		numBuffer[i].push_back(std::getline(savedVarFile, i + 1));
+	}
+	savedVarFile.close();
+
+	std::ofstream csvFile;
+	if (csvFile.open(file) == std::ios::fail)
+	{
+		csvFile.open(file, std::fstream::out);
+	}
+	if (csvFile.is_open)
+	{
+		for (line; line < printBuffer.max_size(); line + 2)
+		{
+			for (int j = line + 1; j < numBuffer.max_size(); j + 2)
+			{
+
+			}
+		}
+	}
+	//open csv file
+	//check if file exists, if not, create
+	//clear file
+	//write line by line until eof
+	//consolidate? or consolidate as writing
 }
