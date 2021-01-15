@@ -207,12 +207,18 @@ std::wstring OpenFile()
 		filePath = szFile;
 	}
 
+	std::ofstream savePathFile;
+	if (savePathFile.open() == std::ios::fail)
+		savePathFile.open(saveDest, std::fstream::out);
+	if (savePathFile.is_open)
+		savePathFile << filePath;
+	savePathFile.close();
+
 	return filePath;
 }
 
 void ConvertToCSV()
 {
-	int line;
 	std::vector<std::string> printBuffer;
 	std::vector<std::string> numBuffer;
 
