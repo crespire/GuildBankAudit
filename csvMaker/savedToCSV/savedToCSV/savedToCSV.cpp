@@ -240,14 +240,15 @@ void ConvertToCSV()
 	}
 	if (csvFile.is_open)
 	{
-		for (line; line < printBuffer.max_size(); line + 2)
-		{
-			
-		}
-		for (int j = line + 1; j < numBuffer.max_size(); j + 2)
-		{
 
+		csvFile << "Item, Count";
+		//for loop i at 0, i+2
+		//itembuffer at i, count at i+1
+		for (int i = 0; i < numBuffer.max_size(); i + 2)
+		{
+			csvFile << printBuffer[i] + ", " + numBuffer[i + 1];
 		}
+		csvFile.close();
 	}
 	//open csv file
 	//check if file exists, if not, create
