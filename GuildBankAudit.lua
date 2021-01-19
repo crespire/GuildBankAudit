@@ -1,4 +1,3 @@
-SavedBankItemInfo = {}
 local ItemsPerTab = 98
 
 local SavedItems = {}
@@ -17,6 +16,8 @@ function SlashCmdList.GUILDBANKAUDIT(cmd, editbox)
     GetGBAFrame(scanTab())
   elseif request  == "help" then
     printHelp()
+  elseif request  == "bug" | "bugreport" | "bugged" then
+    GetGBAFrame(printBugInfo())
   else
     printHelp()
   end
@@ -29,6 +30,7 @@ function printHelp()
   print("|cff5fe65dall|r", " - Scans your entire guild bank. |cffc21e1eYou must click on each tab in your guild bank before running this command.|r")
   print("|cff5fe65dtab|r", " - Scans the current tab open in your guild bank.")
   print("|cff5fe65dhelp|r", " - Displays this information here.")
+  print("|cff5fe65dbug, bugreport, bugged|r", " - Get the link report any bugs.")
   print("------------------------------------")
 end
 
@@ -177,4 +179,10 @@ function GetGBAFrame(input)
   GBAEdit:SetText(input)
   GBAEdit:HighlightText()
   GBAFrame:Show()
+end
+
+--display issue tracker for bug reporting
+function printBugInfo()
+  local outText = 'https://github.com/ToastyDev/GuildBankAudit/issues'
+  return outText
 end
