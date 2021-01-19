@@ -1,6 +1,9 @@
 SavedBankItemInfo = {}
 local ItemsPerTab = 98
 
+local SavedItems = {}
+local SavedItemCounts = {}
+
 SLASH_GUILDBANKAUDIT1 = "/guildbankaudit"
 SLASH_GUILDBANKAUDIT2 = "/gba"
 SLASH_GUILDBANKAUDIT3 = "/gbank"
@@ -14,8 +17,6 @@ function SlashCmdList.GUILDBANKAUDIT(cmd, editbox)
     GetGBAFrame(scanTab())
   elseif request  == "help" then
     printHelp()
-  elseif request == "dev" then
-    runDev()
   else
     printHelp()
   end
@@ -25,44 +26,15 @@ end
 function printHelp()
   print("----- |cff26c426Guild Bank Audit Options|r -----")
   print("Type the slash command followed by one of the options below -> '/gba command'")
-  print("|cffc21e1eDATA WILL NOT BE SAVED UNTIL YOU LOG OUT OF YOUR CHARACTER!|r")
   print("|cff5fe65dall|r", " - Scans your entire guild bank. |cffc21e1eYou must click on each tab in your guild bank before running this command.|r")
   print("|cff5fe65dtab|r", " - Scans the current tab open in your guild bank.")
   print("|cff5fe65dhelp|r", " - Displays this information here.")
   print("------------------------------------")
 end
 
--- scans entire loaded guild bank (cannot load bank for you)
-function scanBank()
-  -- get number of tabs
-  -- for each tab (GetGuildBankTabInfo)
-  -- for each item (GetGuildBankItemInfo)
-  -- save to table
-  local outText = ''
-  local numTabs = GetNumGuildBankTabs()
-  for i = 1, numTabs, 1 do
-    --local tabName, tabIcon, tabViewable, tabCanDeposit, tabNumWithdrawls, tabRemainingWithdrawals = GetGuildBankTabInfo(i)
-    for k = 1, ItemsPerTab, 1 do
-      local itemTex, itemCount, itemLocked, itemFiltered, itemQuality = GetGuildBankItemInfo(i, k)
-      local itemName = GetGuildBankItemLink(i, k)
-      if itemName ~= nil then
-        local cleanName = removeStringGunk(itemName)
-        tinsert(SavedBankItemInfo, format("%s, %c,", cleanName, tostring(itemCount)))
-      --  tinsert(SavedBankItemInfo, itemName)
-      --  tinsert(SavedBankItemInfo, itemCount)
-        outText = outText .. cleanName .. ', ' .. itemCount .. '\n'
-      end
-    end
-  end
-  print("|cff26c426Guild Bank Audit Complete!|r Data will be saved when you log out.")
-  return outText
-end
-
--- scans the current tab the player is looking at
+--scans the current tab the player is looking at
 function scanTab()
-  -- get current tab
-  -- for each item
-  -- save to table
+  local tableCount = 0
   local outText = ''
   local currentTab = GetCurrentGuildBankTab()
   for i = 1, ItemsPerTab, 1 do
@@ -70,24 +42,56 @@ function scanTab()
     local itemName = GetGuildBankItemLink(currentTab, i)
     if itemName ~= nil then
       local cleanName = removeStringGunk(itemName)
-      tinsert(SavedBankItemInfo, format("%s, %c,", cleanName, tostring(itemCount)))
-    --  tinsert(SavedBankItemInfo, itemName)
-    --  tinsert(SavedBankItemInfo, itemCount)
-      outText = outText .. cleanName .. ', ' .. itemCount .. '\n'
+      if (checkTable(SavedItems, cleanName) ~= true) then
+        tinsert(SavedItems, cleanName)
+        tinsert(SavedItemCounts, itemCount)
+        tableCount = tableCount + 1
+      else
+        SavedItemCounts[searchTable(SavedItems, cleanName)] = SavedItemCounts[searchTable(SavedItems, cleanName)] + itemCount
+      end
     end
   end
-  print("|cff26c426Guild Bank Tab Audit Complete!|r Data will be saved when you log out.")
+
+  local  outLength = getTableLength(SavedItems)
+  for i = 1, outLength, 1 do
+    outText = outText .. SavedItems[i] .. ', ' .. SavedItemCounts[i] .. '\n'
+  end
+  print("|cff26c426Guild Bank Tab Audit Complete!|r")
   return outText
 end
 
-function runDev()
-  GetGBAFrame(scanBank())
+-- scans entire loaded guild bank (cannot load bank for you)
+function scanBank()
+  local tableCount = 0
+  local outText = ''
+  local numTabs = GetNumGuildBankTabs()
+  for i = 1, numTabs, 1 do
+    for k = 1, ItemsPerTab, 1 do
+      local itemTex, itemCount, itemLocked, itemFiltered, itemQuality = GetGuildBankItemInfo(i, k)
+      local itemName = GetGuildBankItemLink(i, k)
+      if itemName ~= nil then
+        local cleanName = removeStringGunk(itemName)
+        if (checkTable(SavedItems, cleanName) ~= true) then
+          tinsert(SavedItems, cleanName)
+          tinsert(SavedItemCounts, itemCount)
+          tableCount = tableCount + 1
+        else
+          SavedItemCounts[searchTable(SavedItems, cleanName)] = SavedItemCounts[searchTable(SavedItems, cleanName)] + itemCount
+        end
+      end
+    end
+  end
+  local  outLength = getTableLength(SavedItems)
+  for i = 1, outLength, 1 do
+    outText = outText .. SavedItems[i] .. ', ' .. SavedItemCounts[i] .. '\n'
+  end
+  print("|cff26c426Guild Bank Audit Complete!|r")
+  return outText
 end
 
--- add duplicates as one entry
-function sortSavedTable()
-
-end
+---------------------------------------------
+--                UTILITY                  --
+---------------------------------------------
 
 --clean up item strings because theyre nasty
 function removeStringGunk(itemName)
@@ -96,6 +100,38 @@ function removeStringGunk(itemName)
   local cleanItemName = strsplit("]", closerCleanItemName)
   return cleanItemName
 end
+
+--get length of given table
+function getTableLength(table)
+  local outNumber = 0
+  for _ in pairs(table) do
+    outNumber = outNumber + 1
+  end
+  return outNumber
+end
+
+--check if element exists in given table
+function checkTable(table, element)
+  for _, value in pairs(table) do
+    if (value == element) then
+      return true
+    end
+  end
+  return false
+end
+
+--search for the position of given element within table
+function searchTable(table, element)
+  for pos, value in pairs(table) do
+    if (value == element) then
+      return pos
+    end
+  end
+end
+
+---------------------------------------------
+--             FRAME INIT                  --
+---------------------------------------------
 
 -- create the output frame
 function GetGBAFrame(input)
