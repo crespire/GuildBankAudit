@@ -34,6 +34,8 @@ end
 
 --scans the current tab the player is looking at
 function scanTab()
+  wipe(SavedItems)
+  wipe(SavedItemCounts)
   local tableCount = 0
   local outText = ''
   local currentTab = GetCurrentGuildBankTab()
@@ -62,6 +64,8 @@ end
 
 -- scans entire loaded guild bank (cannot load bank for you)
 function scanBank()
+  wipe(SavedItems)
+  wipe(SavedItemCounts)
   local tableCount = 0
   local outText = ''
   local numTabs = GetNumGuildBankTabs()
