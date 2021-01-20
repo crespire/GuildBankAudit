@@ -16,7 +16,7 @@ function SlashCmdList.GUILDBANKAUDIT(cmd, editbox)
     GetGBAFrame(scanTab())
   elseif request  == "help" then
     printHelp()
-  elseif request  == "bug" | "bugreport" | "bugged" then
+  elseif request == "bugged" then
     GetGBAFrame(printBugInfo())
   else
     printHelp()
@@ -30,7 +30,7 @@ function printHelp()
   print("|cff5fe65dall|r", " - Scans your entire guild bank. |cffc21e1eYou must click on each tab in your guild bank before running this command.|r")
   print("|cff5fe65dtab|r", " - Scans the current tab open in your guild bank.")
   print("|cff5fe65dhelp|r", " - Displays this information here.")
-  print("|cff5fe65dbug, bugreport, bugged|r", " - Get the link report any bugs.")
+  print("|cff5fe65dbugged|r", " - Get the link report any bugs.")
   print("------------------------------------")
 end
 
