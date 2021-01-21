@@ -45,7 +45,7 @@ function scanTab()
     local itemTex, itemCount, itemLocked, itemFiltered, itemQuality = GetGuildBankItemInfo(currentTab, i)
     local itemName = GetGuildBankItemLink(currentTab, i)
     if itemName ~= nil then
-      local cleanName = removeStringGunk(itemName)
+      local cleanName = cleanString(itemName)
       if (checkTable(SavedItems, cleanName) ~= true) then
         tinsert(SavedItems, cleanName)
         tinsert(SavedItemCounts, itemCount)
@@ -76,7 +76,7 @@ function scanBank()
       local itemTex, itemCount, itemLocked, itemFiltered, itemQuality = GetGuildBankItemInfo(i, k)
       local itemName = GetGuildBankItemLink(i, k)
       if itemName ~= nil then
-        local cleanName = removeStringGunk(itemName)
+        local cleanName = cleanString(itemName)
         if (checkTable(SavedItems, cleanName) ~= true) then
           tinsert(SavedItems, cleanName)
           tinsert(SavedItemCounts, itemCount)
@@ -100,11 +100,10 @@ end
 ---------------------------------------------
 
 --clean up item strings because theyre nasty
-function removeStringGunk(itemName)
-  local _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, almostCleanItemName = strsplit(":", itemName)
-  local _, closerCleanItemName = strsplit("[", almostCleanItemName)
-  local cleanItemName = strsplit("]", closerCleanItemName)
-  return cleanItemName
+function cleanString(itemName)
+  local _, newItemName = strsplit("[", itemName)
+  local clean, _ = strsplit("]", newItemName)
+  return clean
 end
 
 --get length of given table
