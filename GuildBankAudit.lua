@@ -2,6 +2,7 @@ local ItemsPerTab = 98
 
 local SavedItems = {}
 local SavedItemCounts = {}
+local LastGoldCheck
 
 SLASH_GUILDBANKAUDIT1 = "/guildbankaudit"
 SLASH_GUILDBANKAUDIT2 = "/gba"
@@ -14,6 +15,8 @@ function SlashCmdList.GUILDBANKAUDIT(cmd, editbox)
     GetGBAFrame(scanBank())
   elseif request  == "tab" then
     GetGBAFrame(scanTab())
+  elseif request == "money" then
+    GetGBAFrame(getMoneyLog())
   elseif request  == "help" then
     printHelp()
   elseif request == "bugged" then
@@ -95,6 +98,60 @@ function scanBank()
   return outText
 end
 
+--grabs the money log info
+function getMoneyLog()
+  local outText = ''
+  local numTabs = GetNumGuildBankTabs()
+  local rawMoney = GetGuildBankMoney()
+  local guildBankMoney = rawMoney / 100 / 100
+  local moneyDifference = 0
+
+  if LastGoldCheck == nil then
+    LastGoldCheck = guildBankMoney
+  end
+
+  outText = outText .. "Current: " .. guildBankMoney .. "\n"
+
+  if guildBankMoney ~= LastGoldCheck then
+    local bitString
+    if guildBankMoney > LastGoldCheck then
+      moneyDifference = guildBankMoney - LastGoldCheck
+      bitString = '+'
+    end
+    if guildBankMoney < LastGoldCheck then
+      moneyDifference = LastGoldCheck - guildBankMoney
+      bitString = '-'
+    end
+    outText = outText .. "Difference from last audit: " .. bitString .. moneyDifference .. "\n"
+  else
+    outText = outText .. "Difference from last audit: 0" .. "\n"
+  end
+
+  QueryGuildBankLog(numTabs + 1)
+  local numMoneyTransactions = GetNumGuildBankMoneyTransactions()
+  local tableCount = 0
+  for i = numMoneyTransactions, 1, -1 do
+    local typeString, player, amount, dateYear, dateMonth, dateDay, dateHour = GetGuildBankMoneyTransaction(i)
+    amount = amount / 100 / 100
+    if typeString == 'buyTab' then
+      typeString = 'buys tab'
+    end
+    outText = outText .. player .. " " .. typeString .. " " .. amount .. " "
+    if dateYear ~= nil then
+      outText = outText .. dateYear .. " years ago" .. "\n"
+    elseif dateYear == nil and dateMonth ~= nil then
+      outText = outText .. dateMonth .. " months ago" .. "\n"
+    elseif dateYear == nil and dateMonth == nil and dateDay ~= nil then
+      outText = outText .. dateDay .. " days ago" .. "\n"
+    else
+      outText = outText .. dateHour .. " hours ago" .. "\n"
+    end
+  end
+
+  LastGoldCheck = guildBankMoney
+  print("|cff26c426Guild Money Log Audit Complete!|r")
+  return outText
+end
 ---------------------------------------------
 --                UTILITY                  --
 ---------------------------------------------

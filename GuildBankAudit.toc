@@ -3,5 +3,6 @@
 ## Notes: Exports guild bank information for external management.
 ## Author: ToastyDev
 ## Version: 1.0
+## SavedVariablesPerCharacter: LastGoldCheck
 
 GuildBankAudit.lua
