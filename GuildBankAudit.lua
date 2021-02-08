@@ -32,6 +32,7 @@ function printHelp()
   print("Type the slash command followed by one of the options below -> '/gba command'")
   print("|cff5fe65dall|r", " - Scans your entire guild bank. |cffc21e1eYou must click on each tab in your guild bank before running this command.|r")
   print("|cff5fe65dtab|r", " - Scans the current tab open in your guild bank.")
+  print("|cff5fe65dmoney|r", " - Scans current gold and displays a difference between current and last scan. Will also display the money log if its been loaded.")
   print("|cff5fe65dhelp|r", " - Displays this information here.")
   print("|cff5fe65dbugged|r", " - Get the link report any bugs.")
   print("------------------------------------")
@@ -136,16 +137,26 @@ function getMoneyLog()
     if typeString == 'buyTab' then
       typeString = 'buys tab'
     end
-    outText = outText .. player .. " " .. typeString .. " " .. amount .. " "
-    if dateYear ~= nil then
-      outText = outText .. dateYear .. " years ago" .. "\n"
-    elseif dateYear == nil and dateMonth ~= nil then
-      outText = outText .. dateMonth .. " months ago" .. "\n"
-    elseif dateYear == nil and dateMonth == nil and dateDay ~= nil then
-      outText = outText .. dateDay .. " days ago" .. "\n"
+
+    if player ~= nil then
+      outText = outText .. player .. " " .. typeString .. " " .. amount .. " "
     else
+      outText = outText .. " " .. typeString .. " " .. amount .. " "
+    end
+
+    if dateHour ~= nil or 0 then
       outText = outText .. dateHour .. " hours ago" .. "\n"
     end
+
+    --if dateYear ~= nil or 0 then
+      --outText = outText .. dateYear .. " years ago" .. "\n"
+    --elseif dateYear == nil or 0 and dateMonth ~= nil or 0 then
+      --outText = outText .. dateMonth .. " months ago" .. "\n"
+    --elseif dateYear == nil or 0 and dateMonth == nil or 0 and dateDay ~= nil or 0 then
+    --  outText = outText .. dateDay .. " days ago" .. "\n"
+  --  else
+    --  outText = outText .. dateHour .. " hours ago" .. "\n"
+    --end
   end
 
   LastGoldCheck = guildBankMoney
