@@ -103,15 +103,15 @@ end
 function getMoneyLog()
   local outText = ''
   local numTabs = GetNumGuildBankTabs()
-  local rawMoney = GetGuildBankMoney()
-  local guildBankMoney = rawMoney / 100 / 100
+  local guildBankMoney = GetGuildBankMoney()
   local moneyDifference = 0
 
   if LastGoldCheck == nil then
     LastGoldCheck = guildBankMoney
   end
 
-  outText = outText .. "Current: " .. guildBankMoney .. "\n"
+  local cleanGuildBankMoney = GetCoinText(guildBankMoney, ", ")
+  outText = outText .. "Current: " .. cleanGuildBankMoney .. "\n"
 
   if guildBankMoney ~= LastGoldCheck then
     local bitString
@@ -133,7 +133,8 @@ function getMoneyLog()
   local tableCount = 0
   for i = numMoneyTransactions, 1, -1 do
     local typeString, player, amount, dateYear, dateMonth, dateDay, dateHour = GetGuildBankMoneyTransaction(i)
-    amount = amount / 100 / 100
+    amount = GetCoinText(amount, ", ")
+
     if typeString == 'buyTab' then
       typeString = 'buys tab'
     end
