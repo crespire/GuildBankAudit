@@ -145,19 +145,31 @@ function getMoneyLog()
       outText = outText .. " " .. typeString .. " " .. amount .. " "
     end
 
-    if dateHour ~= nil or 0 then
-      outText = outText .. dateHour .. " hours ago" .. "\n"
+    if (dateYear == 0) and (dateMonth == 0) and (dateDay == 0) then
+      if dateHour > 1 then
+        outText = outText .. dateHour .. " hours ago" .. "\n"
+      else
+        outText = outText .. dateHour .. " hour ago" .. "\n"
+      end
+    elseif (dateYear == 0) and (dateMonth == 0) then
+      if dateDay > 1 then
+        outText = outText .. dateDay .. " days ago" .. "\n"
+      else
+        outText = outText .. dateDay .. " day ago" .. "\n"
+      end
+    elseif (dateYear == 0) then
+      if dateMonth > 1 then
+        outText = outText .. dateMonth .. " months ago" .. "\n"
+      else
+        outText = outText .. dateMonth .. " month ago" .. "\n"
+      end
+    else
+      if  dateYear > 1 then
+        outText = outText .. dateYear .. " years ago" .. "\n"
+      else
+        outText = outText .. dateYear .. " year ago" .. "\n"
+      end
     end
-
-    --if dateYear ~= nil or 0 then
-      --outText = outText .. dateYear .. " years ago" .. "\n"
-    --elseif dateYear == nil or 0 and dateMonth ~= nil or 0 then
-      --outText = outText .. dateMonth .. " months ago" .. "\n"
-    --elseif dateYear == nil or 0 and dateMonth == nil or 0 and dateDay ~= nil or 0 then
-    --  outText = outText .. dateDay .. " days ago" .. "\n"
-  --  else
-    --  outText = outText .. dateHour .. " hours ago" .. "\n"
-    --end
   end
 
   LastGoldCheck = guildBankMoney
