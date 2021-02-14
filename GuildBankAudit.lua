@@ -2,7 +2,7 @@ local ItemsPerTab = 98
 
 local SavedItems = {}
 local SavedItemCounts = {}
-local LastGoldCheck
+local LastGoldCheck = _G.LastGoldCheck
 
 SLASH_GUILDBANKAUDIT1 = "/guildbankaudit"
 SLASH_GUILDBANKAUDIT2 = "/gba"
@@ -123,6 +123,7 @@ function getMoneyLog()
       moneyDifference = LastGoldCheck - guildBankMoney
       bitString = '-'
     end
+    moneyDifference = GetCoinText(moneyDifference, ", ")
     outText = outText .. "Difference from last audit: " .. bitString .. moneyDifference .. "\n"
   else
     outText = outText .. "Difference from last audit: 0" .. "\n"
@@ -137,20 +138,24 @@ function getMoneyLog()
 
     if typeString == 'buyTab' then
       typeString = 'buys tab'
+    elseif typeString == 'depositSummary' then
+      typeString = 'Challenge reward deposit'
+    elseif typeString == 'repair' then
+      typeString = 'repaired for'
+    elseif typeString == 'deposit' then
+      typeString = 'deposited'
+    elseif typeString == 'withdraw' then
+      typeString = 'withdrew'
     end
 
     if player ~= nil then
       outText = outText .. player .. " " .. typeString .. " " .. amount .. " "
     else
-      outText = outText .. " " .. typeString .. " " .. amount .. " "
+      outText = outText .. typeString .. " " .. amount .. " "
     end
 
     if (dateYear == 0) and (dateMonth == 0) and (dateDay == 0) then
-      if dateHour > 1 then
         outText = outText .. dateHour .. " hours ago" .. "\n"
-      else
-        outText = outText .. dateHour .. " hour ago" .. "\n"
-      end
     elseif (dateYear == 0) and (dateMonth == 0) then
       if dateDay > 1 then
         outText = outText .. dateDay .. " days ago" .. "\n"
