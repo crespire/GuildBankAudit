@@ -11,6 +11,7 @@ SLASH_GUILDBANKAUDIT3 = "/gbank"
 -- process chat commands
 function SlashCmdList.GUILDBANKAUDIT(cmd, editbox)
   local request, arg = strsplit(' ', cmd)
+  request = request.lower(request)
   if request == "all" then
     GetGBAFrame(scanBank())
   elseif request  == "tab" then
