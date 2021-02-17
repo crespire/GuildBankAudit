@@ -2,7 +2,23 @@ local ItemsPerTab = 98
 
 local SavedItems = {}
 local SavedItemCounts = {}
-local LastGoldCheck = _G.LastGoldCheck
+local LastGoldCheck
+
+--event handling frame to make sure saved variables load and save properly
+local eventFrame = CreateFrame("Frame", "EventFrame")
+EventFrame:RegisterEvent("ADDON_LOADED")
+EventFrame:RegisterEvent("PLAYER_LOGOUT")
+
+function eventParse(self, event, arg1)
+  if (event == "ADDON_LOADED") then
+    LastGoldCheck = _G.LastGoldCheck
+    EventFrame:UnregisterEvent("ADDON_LOADED")
+  elseif (event == "PLAYER_LOGOUT") then
+    _G.LastGoldCheck = LastGoldCheck
+  end
+end
+
+EventFrame:SetScript("OnEvent", eventParse)
 
 SLASH_GUILDBANKAUDIT1 = "/guildbankaudit"
 SLASH_GUILDBANKAUDIT2 = "/gba"
@@ -156,7 +172,11 @@ function getMoneyLog()
     end
 
     if (dateYear == 0) and (dateMonth == 0) and (dateDay == 0) then
+      if dateHour == 0 then
+        outText = outText .. " less than an hour ago" .. "\n"
+      else
         outText = outText .. dateHour .. " hours ago" .. "\n"
+      end
     elseif (dateYear == 0) and (dateMonth == 0) then
       if dateDay > 1 then
         outText = outText .. dateDay .. " days ago" .. "\n"
