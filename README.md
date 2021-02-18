@@ -10,5 +10,5 @@ All commands can be used with "/gba", "/gbank", or "/guildbankaudit" followed by
 - bugged -> displays a window with the link to report any bugs
 
 
-#Not A Bug List
+# Not A Bug List
 - The number of entries in the money log is limited by Blizzard. They push the oldest transactions out as new ones are recorded. Otherwise the data stored would grow to insane levels across the whole game.
