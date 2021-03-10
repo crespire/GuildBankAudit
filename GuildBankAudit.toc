@@ -1,8 +1,8 @@
-## Interface: 90002
+## Interface: 90005
 ## Title: Guild Bank Audit
 ## Notes: Exports guild bank information for external management.
 ## Author: ToastyDev
-## Version: 1.1
+## Version: 1.1.1
 ## SavedVariablesPerCharacter: LastGoldCheck
 
 GuildBankAudit.lua
