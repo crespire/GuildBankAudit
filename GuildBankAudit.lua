@@ -51,7 +51,7 @@ function printHelp()
   print("|cff5fe65dtab|r", " - Scans the current tab open in your guild bank.")
   print("|cff5fe65dmoney|r", " - Scans current gold and displays a difference between current and last scan. Will also display the money log if its been loaded.")
   print("|cff5fe65dhelp|r", " - Displays this information here.")
-  print("|cff5fe65dbugged|r", " - Get the link report any bugs.")
+  print("|cff5fe65dbugged|r", " - Get the link to report any bugs.")
   print("------------------------------------")
 end
 
