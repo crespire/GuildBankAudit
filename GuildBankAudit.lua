@@ -3,6 +3,7 @@ local ItemsPerTab = 98
 local SavedItems = {}
 local SavedItemCounts = {}
 local LastGoldCheck
+local ElvUILoaded = false
 
 --event handling frame to make sure saved variables load and save properly
 local eventFrame = CreateFrame("Frame", "EventFrame")
@@ -12,6 +13,11 @@ EventFrame:RegisterEvent("PLAYER_LOGOUT")
 function eventParse(self, event, arg1)
   if (event == "ADDON_LOADED") then
     LastGoldCheck = _G.LastGoldCheck
+    --check for elvui
+    if (IsAddOnLoaded("ElvUI")) then
+      ElvUILoaded = true
+    end
+    createButtons()
     EventFrame:UnregisterEvent("ADDON_LOADED")
   elseif (event == "PLAYER_LOGOUT") then
     _G.LastGoldCheck = LastGoldCheck
@@ -241,9 +247,60 @@ function searchTable(table, element)
   end
 end
 
+function getItemID(link)
+  local _, _, Color, Ltype, Id, Enchant, Gem1, Gem2, Gem3, Gem4, Suffix, Unique, LinkLvl, Name = string.find(link, "|?c?f?f?(%x*)|?H?([^:]*):?(%d+):?(%d*):?(%d*):?(%d*):?(%d*):?(%d*):?(%-?%d*):?(%-?%d*):?(%d*):?(%d*):?(%-?%d*)|?h?%[?([^%[%]]*)%]?|?h?|?r?")
+  return Id
+end
+
 ---------------------------------------------
 --             FRAME INIT                  --
 ---------------------------------------------
+
+-- create buttons on guild bank ui
+function createButtons()
+  local buttonFrame = CreateFrame("Button", "ScanButtonFrame", GuildBankFrame, "UIPanelButtonTemplate")
+  if ElvUILoaded == true then
+    buttonFrame:StripTextures()
+  end
+  buttonFrame:SetPoint("TOPLEFT", 8, -30)
+  buttonFrame:SetFrameLevel(4)
+
+  buttonFrame.ScanAll = CreateFrame("Button", "ScanAllButton", buttonFrame, "UIPanelButtonTemplate")
+  buttonFrame.ScanAll:SetSize(87, 22)
+  buttonFrame.ScanAll:SetText("Scan All")
+  buttonFrame.ScanAll:SetPoint("BOTTOMLEFT", buttonFrame)
+  buttonFrame.ScanAll:RegisterForClicks("LeftButtonUp")
+  buttonFrame.ScanAll:SetScript("OnClick", function() GetGBAFrame(scanBank()) end)
+  if ElvUILoaded == true then
+    buttonFrame.ScanAll:StyleButton()
+    buttonFrame.ScanAll:SetTemplate(nil, true)
+  end
+  buttonFrame.ScanAll:SetFrameLevel(4)
+
+  buttonFrame.ScanTab = CreateFrame("Button", "ScanTabButton", buttonFrame, "UIPanelButtonTemplate")
+  buttonFrame.ScanTab:SetSize(87, 22)
+  buttonFrame.ScanTab:SetText("Scan Tab")
+  buttonFrame.ScanTab:SetPoint("BOTTOMLEFT", buttonFrame.ScanAll, "BOTTOMRIGHT")
+  buttonFrame.ScanTab:RegisterForClicks("LeftButtonUp")
+  buttonFrame.ScanTab:SetScript("OnClick", function() GetGBAFrame(scanTab()) end)
+  if ElvUILoaded == true then
+    buttonFrame.ScanTab:StyleButton()
+    buttonFrame.ScanTab:SetTemplate(nil, true)
+  end
+  buttonFrame.ScanTab:SetFrameLevel(4)
+
+  buttonFrame.ScanMoney = CreateFrame("Button", "ScanMoneyButton", buttonFrame, "UIPanelButtonTemplate")
+  buttonFrame.ScanMoney:SetSize(87, 22)
+  buttonFrame.ScanMoney:SetText("Scan Money")
+  buttonFrame.ScanMoney:SetPoint("BOTTOMLEFT", buttonFrame.ScanTab, "BOTTOMRIGHT")
+  buttonFrame.ScanMoney:RegisterForClicks("LeftButtonUp")
+  buttonFrame.ScanMoney:SetScript("OnClick", function() GetGBAFrame(getMoneyLog()) end)
+  if ElvUILoaded == true then
+    buttonFrame.ScanMoney:StyleButton()
+    buttonFrame.ScanMoney:SetTemplate(nil, true)
+  end
+  buttonFrame.ScanMoney:SetFrameLevel(4)
+end
 
 -- create the output frame
 function GetGBAFrame(input)

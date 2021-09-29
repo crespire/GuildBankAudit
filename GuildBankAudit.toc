@@ -2,7 +2,9 @@
 ## Title: Guild Bank Audit
 ## Notes: Exports guild bank information for external management.
 ## Author: ToastyDev
-## Version: 1.1.2
+## Version: 1.2
 ## SavedVariablesPerCharacter: LastGoldCheck
+## LoadOnDemand: 1
+## LoadWith: Blizzard_GuildBankUI
 
 GuildBankAudit.lua
