@@ -1,3 +1,3 @@
-A fork of Guild Bank Audit by @ToastyDev
+A fork of Guild Bank Audit
 
 * Adds item ID to output.
