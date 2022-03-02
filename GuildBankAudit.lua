@@ -1,6 +1,7 @@
 local ItemsPerTab = 98
 
 local SavedItems = {}
+local SavedItemsIDs = {}
 local SavedItemCounts = {}
 local LastGoldCheck
 local ElvUILoaded = false
@@ -70,11 +71,13 @@ function scanTab()
   local currentTab = GetCurrentGuildBankTab()
   for i = 1, ItemsPerTab, 1 do
     local itemTex, itemCount, itemLocked, itemFiltered, itemQuality = GetGuildBankItemInfo(currentTab, i)
-    local itemName = GetGuildBankItemLink(currentTab, i)
-    if itemName ~= nil then
-      local cleanName = cleanString(itemName)
+    local itemLink = GetGuildBankItemLink(currentTab, i)
+    if itemLink ~= nil then
+      local cleanName = cleanString(itemLink)
+	  local itemID = tonumber(strmatch(itemLink, "item:(%d+):"))
       if (checkTable(SavedItems, cleanName) ~= true) then
-        tinsert(SavedItems, cleanName)
+		tinsert(SavedItems, cleanName)
+        tinsert(SavedItemsIDs, itemID)
         tinsert(SavedItemCounts, itemCount)
         tableCount = tableCount + 1
       else
@@ -85,7 +88,7 @@ function scanTab()
 
   local  outLength = getTableLength(SavedItems)
   for i = 1, outLength, 1 do
-    outText = outText .. SavedItems[i] .. ', ' .. SavedItemCounts[i] .. '\n'
+    outText = outText .. SavedItems[i] .. ',' .. SavedItemsIDs[i] .. ',' .. SavedItemCounts[i] .. '\n'
   end
   print("|cff26c426Guild Bank Tab Audit Complete!|r")
   return outText
@@ -101,11 +104,13 @@ function scanBank()
   for i = 1, numTabs, 1 do
     for k = 1, ItemsPerTab, 1 do
       local itemTex, itemCount, itemLocked, itemFiltered, itemQuality = GetGuildBankItemInfo(i, k)
-      local itemName = GetGuildBankItemLink(i, k)
-      if itemName ~= nil then
-        local cleanName = cleanString(itemName)
+      local itemLink = GetGuildBankItemLink(i, k)
+      if itemLink ~= nil then
+        local cleanName = cleanString(itemLink)
+		local itemID = tonumber(strmatch(itemLink, "item:(%d+):"))
         if (checkTable(SavedItems, cleanName) ~= true) then
-          tinsert(SavedItems, cleanName)
+		  tinsert(SavedItems, cleanName)
+          tinsert(SavedItemsIDs, itemID)
           tinsert(SavedItemCounts, itemCount)
           tableCount = tableCount + 1
         else
@@ -116,7 +121,7 @@ function scanBank()
   end
   local  outLength = getTableLength(SavedItems)
   for i = 1, outLength, 1 do
-    outText = outText .. SavedItems[i] .. ', ' .. SavedItemCounts[i] .. '\n'
+    outText = outText .. SavedItems[i] .. ',' .. SavedItemsIDs[i] .. ',' .. SavedItemCounts[i] .. '\n'
   end
   print("|cff26c426Guild Bank Audit Complete!|r")
   return outText
@@ -262,7 +267,7 @@ function createButtons()
   if ElvUILoaded == true then
     buttonFrame:StripTextures()
   end
-  buttonFrame:SetPoint("TOPLEFT", 8, -30)
+  buttonFrame:SetPoint("TOPLEFT", 25, -41)
   buttonFrame:SetFrameLevel(4)
 
   buttonFrame.ScanAll = CreateFrame("Button", "ScanAllButton", buttonFrame, "UIPanelButtonTemplate")
