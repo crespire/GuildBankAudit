@@ -1,0 +1,10 @@
+## Interface: 20503
+## Title: gbc (Guild Bank CSV)
+## Notes: Fork of Guild Bank Audit
+## Author: ToastyDev, crespire
+## Version: TBC 1.0
+## SavedVariablesPerCharacter: LastGoldCheck
+## LoadOnDemand: 1
+## LoadWith: Blizzard_GuildBankUI
+
+gbc.lua
